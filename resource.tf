@@ -1,3 +1,21 @@
+
+data "aws_ami" "ubuntu" {
+  owners      = ["${var.owner}"]
+  most_recent = true
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "name"
+    values = ["${var.ami-name}"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+}
+
 resource "aws_key_pair" "terraform-key" {
   key_name   = "terraform-key"
   public_key = file("${path.module}/id_rsa.pub")
@@ -5,7 +23,7 @@ resource "aws_key_pair" "terraform-key" {
 
 
 resource "aws_instance" "terraform-instance" {
-  ami                    = var.ami-id
+  ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.terraform-key.key_name
   vpc_security_group_ids = ["${aws_security_group.allow_tls.id}"]
