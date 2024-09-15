@@ -1,4 +1,7 @@
-variable "ami-id" {
+variable "ami-name" {
+}
+
+variable "owner" {
 }
 
 variable "region" {
